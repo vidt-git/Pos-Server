@@ -69,7 +69,7 @@ def get_running_total() -> float:
         return sum(task['amount'] for task in done_tasks)
 
 def render_page():
-    """Render coffee shop themed todo list page"""
+    """Render todo list page"""
     with file_lock:
         todo_tasks = load_json_file(TODO_FILE)
         done_tasks = load_json_file(DONE_FILE)
@@ -117,9 +117,9 @@ def render_page():
     <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Coffee Shop Todo List</title>
+        <title>Task Manager</title>
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Montserrat:wght@300;500;700&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
             
             * {{
                 margin: 0;
@@ -128,8 +128,8 @@ def render_page():
             }}
             
             body {{
-                font-family: 'Montserrat', sans-serif;
-                background: linear-gradient(135deg, #f5e6d3 0%, #d4a574 100%);
+                font-family: 'Inter', sans-serif;
+                background: linear-gradient(135deg, #9b59b6 0%, #6c3483 100%);
                 min-height: 100vh;
                 padding: 20px;
             }}
@@ -137,59 +137,32 @@ def render_page():
             .container {{
                 max-width: 800px;
                 margin: 0 auto;
-                background: #fff9f0;
+                background: white;
                 border-radius: 20px;
-                box-shadow: 0 10px 40px rgba(101, 67, 33, 0.3);
+                box-shadow: 0 10px 40px rgba(107, 52, 131, 0.3);
                 overflow: hidden;
             }}
             
             .header {{
-                background: linear-gradient(135deg, #6f4e37 0%, #4a2c1a 100%);
-                color: #fff9f0;
+                background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);
+                color: white;
                 padding: 30px;
                 text-align: center;
-                position: relative;
-            }}
-            
-            .header::before {{
-                content: "☕";
-                position: absolute;
-                top: 10px;
-                left: 20px;
-                font-size: 2em;
-                opacity: 0.7;
-            }}
-            
-            .header::after {{
-                content: "☕";
-                position: absolute;
-                top: 10px;
-                right: 20px;
-                font-size: 2em;
-                opacity: 0.7;
             }}
             
             h1 {{
-                font-family: 'Lora', serif;
                 font-size: 2.5em;
-                margin-bottom: 10px;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            }}
-            
-            .subtitle {{
-                font-size: 0.9em;
-                opacity: 0.9;
-                font-weight: 300;
+                font-weight: 700;
             }}
             
             .total-section {{
-                background: #8b6f47;
+                background: #7d3c98;
                 color: white;
                 padding: 20px 30px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                border-bottom: 3px solid #6f4e37;
+                border-bottom: 3px solid #6c3483;
             }}
             
             .total-label {{
@@ -200,13 +173,12 @@ def render_page():
             .total-amount {{
                 font-size: 2em;
                 font-weight: 700;
-                font-family: 'Lora', serif;
             }}
             
             .add-task-section {{
                 padding: 30px;
-                background: #fef8ed;
-                border-bottom: 2px dashed #d4a574;
+                background: #f9f9f9;
+                border-bottom: 2px solid #e8e8e8;
             }}
             
             .form-row {{
@@ -219,10 +191,10 @@ def render_page():
             input[type="number"] {{
                 flex: 1;
                 padding: 12px 15px;
-                border: 2px solid #d4a574;
+                border: 2px solid #d4b8e8;
                 border-radius: 10px;
                 font-size: 1em;
-                font-family: 'Montserrat', sans-serif;
+                font-family: 'Inter', sans-serif;
                 background: white;
                 transition: border-color 0.3s;
             }}
@@ -230,13 +202,13 @@ def render_page():
             input[type="text"]:focus,
             input[type="number"]:focus {{
                 outline: none;
-                border-color: #6f4e37;
+                border-color: #8e44ad;
             }}
             
             .add-btn {{
                 width: 100%;
                 padding: 12px;
-                background: linear-gradient(135deg, #6f4e37 0%, #4a2c1a 100%);
+                background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);
                 color: white;
                 border: none;
                 border-radius: 10px;
@@ -248,7 +220,7 @@ def render_page():
             
             .add-btn:hover {{
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(111, 78, 55, 0.4);
+                box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
             }}
             
             .add-btn:active {{
@@ -266,7 +238,7 @@ def render_page():
                 padding: 15px;
                 margin-bottom: 15px;
                 border-radius: 12px;
-                border: 2px solid #e8d5b7;
+                border: 2px solid #e8d8f5;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -274,14 +246,14 @@ def render_page():
             }}
             
             .task-item:hover {{
-                box-shadow: 0 4px 12px rgba(111, 78, 55, 0.2);
+                box-shadow: 0 4px 12px rgba(142, 68, 173, 0.2);
                 transform: translateY(-2px);
             }}
             
             .task-item.done {{
-                background: #f0ebe4;
+                background: #f5f0f8;
                 opacity: 0.7;
-                border-color: #c4b5a0;
+                border-color: #d4b8e8;
             }}
             
             .task-left {{
@@ -295,7 +267,7 @@ def render_page():
                 width: 24px;
                 height: 24px;
                 cursor: pointer;
-                accent-color: #6f4e37;
+                accent-color: #8e44ad;
             }}
             
             .task-info {{
@@ -304,7 +276,7 @@ def render_page():
             
             .task-name {{
                 font-size: 1.1em;
-                color: #4a2c1a;
+                color: #333;
                 margin-bottom: 5px;
                 font-weight: 500;
             }}
@@ -315,20 +287,19 @@ def render_page():
             
             .task-date {{
                 font-size: 0.8em;
-                color: #8b7355;
+                color: #888;
             }}
             
             .task-amount {{
                 font-size: 1.3em;
                 font-weight: 700;
-                color: #6f4e37;
-                font-family: 'Lora', serif;
+                color: #8e44ad;
             }}
             
             .empty-state {{
                 text-align: center;
                 padding: 40px;
-                color: #8b7355;
+                color: #888;
             }}
             
             .empty-state-icon {{
@@ -364,27 +335,26 @@ def render_page():
     <body>
         <div class="container">
             <div class="header">
-                <h1>Café Todo</h1>
-                <div class="subtitle">Brew your productivity, one task at a time</div>
+                <h1>Task Manager</h1>
             </div>
             
             <div class="total-section">
-                <div class="total-label">☕ Running Total</div>
+                <div class="total-label">Running Total</div>
                 <div class="total-amount" id="runningTotal">₹{running_total:.2f}</div>
             </div>
             
             <div class="add-task-section">
                 <form id="taskForm">
                     <div class="form-row">
-                        <input type="text" id="taskName" placeholder="What needs to be done?" required>
+                        <input type="text" id="taskName" placeholder="Task name" required>
                         <input type="number" id="taskAmount" placeholder="Amount" step="0.01" required>
                     </div>
-                    <button type="submit" class="add-btn">✨ Add Task</button>
+                    <button type="submit" class="add-btn">Add Task</button>
                 </form>
             </div>
             
             <div class="tasks-section" id="tasksList">
-                {tasks_html if tasks_html else '<div class="empty-state"><div class="empty-state-icon">☕</div><div>No tasks yet. Add one to get started!</div></div>'}
+                {tasks_html if tasks_html else '<div class="empty-state"><div class="empty-state-icon">📋</div><div>No tasks yet</div></div>'}
             </div>
         </div>
         
@@ -523,48 +493,21 @@ def get_total():
     total = get_running_total()
     return {"running_total": total}
 
-@app.get("/next_job")
-def get_next_job():
-    """Get next uncompleted task for home server to process"""
+@app.get("/next_task")
+def get_next_task():
+    """Get latest completed task"""
     with file_lock:
-        todo_tasks = load_json_file(TODO_FILE)
         done_tasks = load_json_file(DONE_FILE)
     
-    done_task_ids = {t['id'] for t in done_tasks}
+    if not done_tasks:
+        return {}
     
-    # Get oldest incomplete task
-    for task in sorted(todo_tasks, key=lambda x: x['created_at']):
-        if task['id'] not in done_task_ids:
-            return {"task": task['task_name'], "amount": str(task['amount'])}
+    # Get latest completed task by completed_at timestamp
+    latest_task = max(done_tasks, key=lambda x: x['completed_at'])
     
-    return {}
+    return {
+        "task": latest_task['task_name'],
+        "amount": str(latest_task['amount']),
+        "completed_at": latest_task['completed_at']
+    }
 
-@app.post("/complete_job")
-def complete_job(task_name: str = Form(...)):
-    """Mark a task as complete when home server finishes processing"""
-    with file_lock:
-        todo_tasks = load_json_file(TODO_FILE)
-        done_tasks = load_json_file(DONE_FILE)
-        
-        # Find the task by name (not yet completed)
-        done_task_ids = {t['id'] for t in done_tasks}
-        task = next(
-            (t for t in sorted(todo_tasks, key=lambda x: x['created_at'], reverse=True) 
-             if t['task_name'] == task_name and t['id'] not in done_task_ids),
-            None
-        )
-        
-        if task:
-            done_task = {
-                "id": task['id'],
-                "task_name": task['task_name'],
-                "amount": task['amount'],
-                "created_at": task['created_at'],
-                "completed_at": datetime.now().isoformat(),
-                "date": task['date']
-            }
-            done_tasks.append(done_task)
-            save_json_file(DONE_FILE, done_tasks)
-            return {"success": True, "message": f"Task '{task_name}' marked as complete"}
-        
-        return {"success": False, "message": "Task not found"}
