@@ -108,7 +108,10 @@ def render_page():
                     <div class="task-date">Created: {created_date}{f" | Done: {completed_date}" if completed_date else ""}</div>
                 </div>
             </div>
-            <div class="task-amount">₹{task['amount']:.2f}</div>
+            <div class="task-right">
+                <div class="task-amount">₹{task['amount']:.2f}</div>
+                <button class="delete-btn" data-id="{task['id']}">🗑️</button>
+            </div>
         </div>
         """
     
@@ -290,10 +293,39 @@ def render_page():
                 color: #888;
             }}
             
+            .task-right {{
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }}
+            
             .task-amount {{
                 font-size: 1.3em;
                 font-weight: 700;
                 color: #8e44ad;
+            }}
+            
+            .delete-btn {{
+                background: #e74c3c;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 12px;
+                cursor: pointer;
+                font-size: 1.2em;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }}
+            
+            .delete-btn:hover {{
+                background: #c0392b;
+                transform: scale(1.1);
+            }}
+            
+            .delete-btn:active {{
+                transform: scale(0.95);
             }}
             
             .empty-state {{
@@ -389,6 +421,22 @@ def render_page():
                     }}
                 }});
             }});
+            
+            // Delete task
+            document.querySelectorAll('.delete-btn').forEach(button => {{
+                button.addEventListener('click', async (e) => {{
+                    const taskId = e.target.dataset.id;
+                    if (confirm('Are you sure you want to delete this task?')) {{
+                        const response = await fetch(`/api/tasks/${{taskId}}`, {{
+                            method: 'DELETE'
+                        }});
+                        
+                        if (response.ok) {{
+                            location.reload();
+                        }}
+                    }}
+                }});
+            }});
         </script>
     </body>
     </html>
@@ -481,7 +529,8 @@ def toggle_task(task_id: int):
                 "amount": task['amount'],
                 "created_at": task['created_at'],
                 "completed_at": datetime.now().isoformat(),
-                "date": task['date']
+                "date": task['date'],
+                "printed": False
             }
             done_tasks.append(done_task)
             save_json_file(DONE_FILE, done_tasks)
@@ -493,21 +542,53 @@ def get_total():
     total = get_running_total()
     return {"running_total": total}
 
+@app.delete("/api/tasks/{task_id}")
+def delete_task(task_id: int):
+    """Delete a task completely from both JSON files"""
+    with file_lock:
+        todo_tasks = load_json_file(TODO_FILE)
+        done_tasks = load_json_file(DONE_FILE)
+        
+        # Find and remove from todo list
+        todo_tasks = [t for t in todo_tasks if t['id'] != task_id]
+        
+        # Find and remove from done list
+        done_tasks = [t for t in done_tasks if t['id'] != task_id]
+        
+        save_json_file(TODO_FILE, todo_tasks)
+        save_json_file(DONE_FILE, done_tasks)
+        
+        return {"success": True, "message": "Task deleted"}
+
 @app.get("/next_task")
 def get_next_task():
-    """Get latest completed task"""
+    """Get latest unprinted completed task and mark it as printed"""
     with file_lock:
         done_tasks = load_json_file(DONE_FILE)
-    
-    if not done_tasks:
-        return {}
-    
-    # Get latest completed task by completed_at timestamp
-    latest_task = max(done_tasks, key=lambda x: x['completed_at'])
-    
-    return {
-        "task": latest_task['task_name'],
-        "amount": str(latest_task['amount']),
-        "completed_at": latest_task['completed_at']
-    }
+        
+        if not done_tasks:
+            return {}
+        
+        # Filter unprinted tasks (tasks without 'printed' field or with printed=False)
+        unprinted_tasks = [t for t in done_tasks if not t.get('printed', False)]
+        
+        if not unprinted_tasks:
+            return {}
+        
+        # Get latest unprinted task by completed_at timestamp
+        latest_task = max(unprinted_tasks, key=lambda x: x['completed_at'])
+        
+        # Mark as printed
+        for task in done_tasks:
+            if task['id'] == latest_task['id']:
+                task['printed'] = True
+                break
+        
+        save_json_file(DONE_FILE, done_tasks)
+        
+        return {
+            "task": latest_task['task_name'],
+            "amount": str(latest_task['amount']),
+            "completed_at": latest_task['completed_at']
+        }
 
