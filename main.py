@@ -478,11 +478,11 @@ def get_tasks():
         done_tasks = load_json_file(DONE_FILE)
     
     today = get_today_date()
-    today_tasks = [t for t in todo_tasks if t['date'] == today]
+    # today_tasks = [t for t in todo_tasks if t['date'] == today]
     done_task_ids = {t['id'] for t in done_tasks}
     
     result = []
-    for task in today_tasks:
+    for task in todo_tasks:
         is_done = task['id'] in done_task_ids
         completed_at = None
         if is_done:
