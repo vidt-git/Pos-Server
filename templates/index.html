@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViToDo</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="timebox-container">
+        <div class="timebox-header">⏰ Time Schedule</div>
+        <div class="timebox-section" id="timeboxList">
+            {% if timebox_html %}
+                {{ timebox_html|safe }}
+            {% else %}
+                <div class="timebox-empty">No timed tasks yet</div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">Vi<span class="logo-accent">ToDo</span></h1>
+            <div class="profile-icon">☕</div>
+        </div>
+        
+        <div class="total-section">
+            <div class="total-label">Running Total</div>
+            <div class="total-amount" id="runningTotal">₹{{ "%.2f"|format(running_total) }}</div>
+        </div>
+        
+        <div class="progress-section">
+            <div class="progress-info">
+                <div class="progress-title">Todo Done</div>
+                <div class="progress-subtitle">keep it up</div>
+            </div>
+            <div class="progress-circle">
+                <svg viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" class="progress-bg"></circle>
+                    <circle cx="60" cy="60" r="50" class="progress-bar" id="progressBar"></circle>
+                </svg>
+                <div class="progress-text" id="progressText">{{ completed_count }}/{{ total_count }}</div>
+            </div>
+        </div>
+        
+        <div class="add-task-section">
+            <form id="taskForm">
+                <div class="task-input-row">
+                    <input type="text" id="taskName" placeholder="write your next task" required>
+                    <input type="number" id="taskAmount" placeholder="Amount" step="0.01" required>
+                    <button type="submit" class="add-btn-circle">+</button>
+                </div>
+                <details class="time-details">
+                    <summary>⏰ Add time schedule (optional)</summary>
+                    <div class="time-inputs">
+                        <span class="time-label">From:</span>
+                        <div class="time-group">
+                            <select id="timeFromHour">
+                                <option value="">HH</option>
+                                {% for i in range(1, 13) %}
+                                <option value="{{ "%02d"|format(i) }}">{{ "%02d"|format(i) }}</option>
+                                {% endfor %}
+                            </select>
+                            <select id="timeFromMin">
+                                <option value="">MM</option>
+                                {% for i in range(0, 60, 15) %}
+                                <option value="{{ "%02d"|format(i) }}">{{ "%02d"|format(i) }}</option>
+                                {% endfor %}
+                            </select>
+                            <select id="timeFromPeriod">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                        <span class="time-label">To:</span>
+                        <div class="time-group">
+                            <select id="timeToHour">
+                                <option value="">HH</option>
+                                {% for i in range(1, 13) %}
+                                <option value="{{ "%02d"|format(i) }}">{{ "%02d"|format(i) }}</option>
+                                {% endfor %}
+                            </select>
+                            <select id="timeToMin">
+                                <option value="">MM</option>
+                                {% for i in range(0, 60, 15) %}
+                                <option value="{{ "%02d"|format(i) }}">{{ "%02d"|format(i) }}</option>
+                                {% endfor %}
+                            </select>
+                            <select id="timeToPeriod">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                </details>
+            </form>
+        </div>
+        
+        <div class="tasks-section" id="tasksList">
+            {% if tasks_html %}
+                {{ tasks_html|safe }}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <div>No tasks yet</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
