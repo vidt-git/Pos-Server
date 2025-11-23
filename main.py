@@ -89,9 +89,10 @@ def get_render_data():
     
     today = get_today_date()
     
-    # Show all incomplete tasks (including from previous days)
+    # Show all tasks (both complete and incomplete) for today's view
     done_task_ids = {t['id'] for t in done_tasks}
-    today_tasks = [t for t in todo_tasks if t['id'] not in done_task_ids]
+    # Filter to show tasks from today and incomplete tasks from previous days
+    today_tasks = [t for t in todo_tasks if t['date'] == today or t['id'] not in done_task_ids]
     
     # Regular tasks list
     tasks_html = ""
@@ -288,12 +289,22 @@ def get_done_tasks():
 
 @app.delete("/api/done-tasks/{task_id}")
 def delete_done_task(task_id: int):
-    """Delete a task from done list only"""
+    """Delete a task from both done list and todo list"""
     with file_lock:
+        # Remove from done list
         done_tasks = load_json_file(DONE_FILE)
         done_tasks = [t for t in done_tasks if t['id'] != task_id]
         save_json_file(DONE_FILE, done_tasks)
-        return {"success": True, "message": "Done task deleted"}
+        
+        # Also remove from todo list
+        todo_tasks = load_json_file(TODO_FILE)
+        todo_tasks = [t for t in todo_tasks if t['id'] != task_id]
+        save_json_file(TODO_FILE, todo_tasks)
+        
+        # Get updated running total
+        running_total = sum(task['amount'] for task in done_tasks)
+        
+        return {"success": True, "message": "Task deleted", "running_total": running_total}
 
 @app.delete("/api/tasks/{task_id}")
 def delete_task(task_id: int):

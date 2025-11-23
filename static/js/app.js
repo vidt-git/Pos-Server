@@ -92,7 +92,7 @@ async function openDoneTasksModal() {
     const modal = document.getElementById('doneTasksModal');
     const container = document.getElementById('doneTasksContainer');
     
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
     container.innerHTML = '<div class="loading">Loading...</div>';
     
     try {
@@ -150,6 +150,8 @@ async function openDoneTasksModal() {
 
 function closeDoneTasksModal() {
     document.getElementById('doneTasksModal').style.display = 'none';
+    // Refresh the page to update the main task list
+    location.reload();
 }
 
 async function deleteDoneTask(taskId) {
@@ -163,7 +165,9 @@ async function deleteDoneTask(taskId) {
         });
         
         if (response.ok) {
-            // Remove the card from the modal
+            const data = await response.json();
+            
+            // Remove the card from the modal with animation
             const card = document.querySelector(`[data-task-id="${taskId}"]`);
             if (card) {
                 card.style.opacity = '0';
@@ -178,8 +182,11 @@ async function deleteDoneTask(taskId) {
                 }, 300);
             }
             
-            // Reload the page to update running total
-            setTimeout(() => location.reload(), 500);
+            // Update the running total on the page without reloading
+            const runningTotalElement = document.getElementById('runningTotal');
+            if (runningTotalElement && data.running_total !== undefined) {
+                runningTotalElement.textContent = `₹${data.running_total.toFixed(2)}`;
+            }
         }
     } catch (error) {
         alert('Error deleting task');
