@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Hub</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/home.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="products-grid">
+            <!-- Todo App Icon -->
+            <a href="/todo" class="product-card">
+                <div class="product-icon">
+                    <img src="{{ url_for('static', path='assets/icons/pos.png') }}" alt="Todo App" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="placeholder-icon" style="display: none;">
+                        <span>📝</span>
+                    </div>
+                </div>
+                <h2 class="product-name">Todo App</h2>
+            </a>
+
+            <!-- Add more product cards here in the future -->
+            <!-- Example template for future products:
+            <a href="/product2" class="product-card">
+                <div class="product-icon">
+                    <img src="{{ url_for('static', path='/assets/icons/product2-icon.png') }}" alt="Product Name">
+                </div>
+                <h2 class="product-name">Product Name</h2>
+            </a>
+            -->
+        </div>
+    </div>
+</body>
+</html>

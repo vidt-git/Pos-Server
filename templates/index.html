@@ -20,6 +20,7 @@
     <div class="container">
         <div class="header">
             <h1 class="logo">Vi<span class="logo-accent">ToDo</span></h1>
+            <button class="done-tasks-btn" onclick="openDoneTasksModal()">📋 Open DoneTodo.json</button>
             <div class="profile-icon">☕</div>
         </div>
         
@@ -104,6 +105,19 @@
                     <div>No tasks yet</div>
                 </div>
             {% endif %}
+        </div>
+    </div>
+    
+    <!-- Done Tasks Modal -->
+    <div id="doneTasksModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Completed Tasks</h2>
+                <span class="close" onclick="closeDoneTasksModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="doneTasksContainer">
+                <div class="loading">Loading...</div>
+            </div>
         </div>
     </div>
     

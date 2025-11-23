@@ -60,6 +60,28 @@ body {
     color: #ff6b4a;
 }
 
+.done-tasks-btn {
+    background: #ff6b4a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+
+.done-tasks-btn:hover {
+    background: #ff7f5e;
+    transform: scale(1.05);
+}
+
+.done-tasks-btn:active {
+    transform: scale(0.95);
+}
+
 .profile-icon {
     font-size: 1.5em;
     cursor: pointer;
@@ -533,6 +555,133 @@ select option {
     }
 }
 
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: #0d0d0d;
+    margin: 5% auto;
+    border: 1px solid #2a2a2a;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 30px;
+    border-bottom: 1px solid #2a2a2a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    color: white;
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close {
+    color: #999;
+    font-size: 2em;
+    font-weight: 300;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.close:hover {
+    color: #ff6b4a;
+}
+
+.modal-body {
+    padding: 30px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.loading {
+    text-align: center;
+    color: #666;
+    padding: 40px;
+}
+
+.done-task-card {
+    background: #1a1a1a;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 16px;
+    border: 1px solid #2a2a2a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.done-task-card:hover {
+    border-color: #3a3a3a;
+    transform: translateX(4px);
+}
+
+.done-task-info {
+    flex: 1;
+}
+
+.done-task-name {
+    font-size: 1.1em;
+    color: #fff;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.done-task-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85em;
+    color: #666;
+}
+
+.done-task-amount {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #ff6b4a;
+    margin-right: 15px;
+}
+
+.done-task-delete {
+    background: transparent;
+    color: #666;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: all 0.2s;
+    padding: 8px;
+}
+
+.done-task-delete:hover {
+    color: #ff6b4a;
+    transform: scale(1.1);
+}
+
+.done-task-right {
+    display: flex;
+    align-items: center;
+}
+
 @media (max-width: 600px) {
     .container, .timebox-container {
         border-radius: 0;
@@ -542,17 +691,32 @@ select option {
         font-size: 1.8em;
     }
     
+    .header {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .done-tasks-btn {
+        order: 3;
+        width: 100%;
+    }
+    
     .form-row {
         flex-direction: column;
     }
     
-    .task-item {
+    .task-item, .done-task-card {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
     
-    .task-amount {
+    .task-amount, .done-task-right {
         align-self: flex-end;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
     }
 }

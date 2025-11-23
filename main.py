@@ -89,11 +89,9 @@ def get_render_data():
     
     today = get_today_date()
     
-    # Filter tasks for today
-    today_tasks = [t for t in todo_tasks if t['date'] == today]
-    
-    # Create a set of done task IDs for quick lookup
+    # Show all incomplete tasks (including from previous days)
     done_task_ids = {t['id'] for t in done_tasks}
+    today_tasks = [t for t in todo_tasks if t['id'] not in done_task_ids]
     
     # Regular tasks list
     tasks_html = ""
@@ -128,23 +126,21 @@ def get_render_data():
         </div>
         """
     
-    # Timebox tasks (sorted by time)
-    timed_tasks = [t for t in today_tasks if t.get('time_from')]
+    # Timebox tasks (sorted by time) - only show incomplete tasks
+    timed_tasks = [t for t in today_tasks if t.get('time_from') and t['id'] not in done_task_ids]
     timed_tasks.sort(key=lambda x: x.get('time_from', ''))
     
     timebox_html = ""
     for task in timed_tasks:
-        is_done = task['id'] in done_task_ids
-        task_class = "done" if is_done else ""
         time_range = f"{task.get('time_from', '')} - {task.get('time_to', '')}"
         
         timebox_html += f"""
-        <div class="timebox-item {task_class}">
+        <div class="timebox-item">
             <div class="timebox-time">{time_range}</div>
             <div class="timebox-task-name">{task['task_name']}</div>
             <div class="timebox-amount">₹{task['amount']:.2f}</div>
             <div class="timebox-actions">
-                <input type="checkbox" class="task-checkbox" data-id="{task['id']}" {'checked' if is_done else ''}>
+                <input type="checkbox" class="task-checkbox" data-id="{task['id']}">
                 <button class="delete-btn-small" data-id="{task['id']}">🗑️</button>
             </div>
         </div>
@@ -165,6 +161,14 @@ def get_render_data():
 # Routes
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
+    """Landing page with product icons"""
+    return templates.TemplateResponse("home.html", {
+        "request": request
+    })
+
+@app.get("/todo", response_class=HTMLResponse)
+async def todo_app(request: Request):
+    """Todo application page"""
     data = get_render_data()
     return templates.TemplateResponse("index.html", {
         "request": request,
@@ -274,6 +278,22 @@ def get_total():
     """Get running total"""
     total = get_running_total()
     return {"running_total": total}
+
+@app.get("/api/done-tasks")
+def get_done_tasks():
+    """Get all done tasks"""
+    with file_lock:
+        done_tasks = load_json_file(DONE_FILE)
+    return {"done_tasks": done_tasks}
+
+@app.delete("/api/done-tasks/{task_id}")
+def delete_done_task(task_id: int):
+    """Delete a task from done list only"""
+    with file_lock:
+        done_tasks = load_json_file(DONE_FILE)
+        done_tasks = [t for t in done_tasks if t['id'] != task_id]
+        save_json_file(DONE_FILE, done_tasks)
+        return {"success": True, "message": "Done task deleted"}
 
 @app.delete("/api/tasks/{task_id}")
 def delete_task(task_id: int):
